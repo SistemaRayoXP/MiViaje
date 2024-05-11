@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.miviaje">
 
     <application
         android:allowBackup="true"
@@ -12,6 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MiViaje"
         tools:targetApi="31">
+
+        <!-- Agrega la meta-data de la API Key de Google Maps dentro de la aplicación -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/AKPI" />
+
+        <!-- Actividad principal -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,6 +29,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Actividad del mapa -->
+        <activity
+            android:name=".MapActivity"
+            android:exported="true">
+        </activity>
+
     </application>
+
+    <!-- Asegúrate de que la etiqueta de permiso para ACCESS_FINE_LOCATION esté presente -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

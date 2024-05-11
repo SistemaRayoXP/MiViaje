@@ -34,5 +34,8 @@ public class SessionManager {
     public boolean isLoged() {
         return pref.getBoolean(KEY_SESSION, false);
     }
+    public boolean isGuest() {
+        return pref.getBoolean(GUEST_SESSION, false);
+    }
 }
 

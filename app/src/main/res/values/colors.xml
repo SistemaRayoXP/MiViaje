@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mainYellow">#FFE964</color>
+    <color name="mainYellowDarknes">#C7B54E</color>
     <color name="mainGreen">#008131</color>
     <color name="mainPurple">#4F6ED3</color>
+    <color name="mainPurpleLigther">#A5B4E6</color>
 </resources>
