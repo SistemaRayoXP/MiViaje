@@ -13,11 +13,12 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        map:cameraZoom = "10"
-        map:uiRotateGestures ="true"
-        map:uiZoomControls="true"/>
+        map:cameraZoom="10"
+        map:uiRotateGestures="true"
+        map:uiZoomControls="true" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -56,8 +57,9 @@
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
-        android:layout_height="45dp"
+        android:id="@+id/destinyContainer"
+        android:layout_width="284dp"
+        android:layout_height="47dp"
         android:layout_margin="16dp"
         android:layout_marginTop="32dp"
         app:cardCornerRadius="16dp"
@@ -69,16 +71,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.043">
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/destino"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="48dp"
             android:background="@color/mainPurpleLigther"
-            android:ems="10"
-            android:hint="¿A donde iremos?"
+            android:hint="¿A donde vamos?"
             android:inputType="text"
-            android:padding="8dp" />
+            android:maxLines="1" />
+
     </androidx.cardview.widget.CardView>
 
 

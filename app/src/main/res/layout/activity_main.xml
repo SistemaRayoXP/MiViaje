@@ -20,7 +20,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/img" />
+        app:srcCompat="@drawable/img"
+        android:contentDescription="@string/logo" />
 
     <Button
         android:id="@+id/loginButton"
@@ -29,8 +30,8 @@
         android:layout_marginStart="130dp"
         android:layout_marginEnd="131dp"
         android:layout_marginBottom="240dp"
-        android:text="Login"
-        android:textSize="24dp"
+        android:text="@string/login"
+        android:textSize="24sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,8 +46,8 @@
         android:layout_marginEnd="131dp"
         android:layout_marginBottom="36dp"
         android:gravity="center"
-        android:text="Invitado"
-        android:textSize="24dp"
+        android:text="@string/invitado"
+        android:textSize="24sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
         app:layout_constraintEnd_toEndOf="parent"
