@@ -43,7 +43,7 @@ public class DrawPath {
 
 
     private String getDirectionsUrl(List<LatLng> coordinates, LatLng destination) {
-        String apiKey = "TuAPI";
+        String apiKey = "";
 
         // Obtener el origen y el destino
         LatLng origin = coordinates.get(0);

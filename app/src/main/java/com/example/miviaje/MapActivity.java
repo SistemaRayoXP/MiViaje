@@ -1,11 +1,14 @@
 package com.example.miviaje;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.text.Editable;
@@ -53,6 +56,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private LatLng currentLocation;
     private  PathCalculator pathCalculator;
     private SupportMapFragment mapFragment;
+    private ImageView card;
+    private ImageView favPaths;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         autoCompleteTextView = findViewById(R.id.destino);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
         autoCompleteTextView.setAdapter(adapter);
+
+        favPaths = findViewById(R.id.favImg);
+        card = findViewById(R.id.cardImg);
+
+        favPaths.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MapActivity.this,SavedPathsActivity.class);
+                startActivity(intent);
+            }
+        });
+        card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MapActivity.this,ScanCardsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
 
         // Configurar TextWatcher para el EditText
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
