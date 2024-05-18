@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity{
         if(sessionManager.isLoged() || sessionManager.isGuest()){
             Intent intent = new Intent(MainActivity.this,MapActivity.class);
             startActivity(intent);
+            finish();
         }else {
             loginButton.setVisibility(View.VISIBLE);
             guestButton.setVisibility(View.VISIBLE);

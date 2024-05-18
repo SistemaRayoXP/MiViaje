@@ -3,40 +3,31 @@ package com.example.miviaje;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
@@ -54,11 +45,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private LatLng currentLocation;
-    private  PathCalculator pathCalculator;
+    private PathCalculator pathCalculator;
     private SupportMapFragment mapFragment;
     private ImageView card;
     private ImageView favPaths;
-
+    private ImageView saveRouteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +60,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        Places.initialize(getApplicationContext(),getString(R.string.AKPI));
+        Places.initialize(getApplicationContext(), getString(R.string.AKPI));
         placesClient = Places.createClient(this);
         pathCalculator = new PathCalculator(placesClient);
 
@@ -79,31 +70,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         favPaths = findViewById(R.id.favImg);
         card = findViewById(R.id.cardImg);
+        saveRouteButton = findViewById(R.id.saveRouteButton);
 
-        favPaths.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MapActivity.this,SavedPathsActivity.class);
-                startActivity(intent);
-            }
-        });
-        card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MapActivity.this,ScanCardsActivity.class);
-                startActivity(intent);
-            }
+        favPaths.setOnClickListener(v -> {
+            Intent intent = new Intent(MapActivity.this, SavedPathsActivity.class);
+            startActivity(intent);
         });
 
-
-
-
+        card.setOnClickListener(v -> {
+            Intent intent = new Intent(MapActivity.this, ScanCardsActivity.class);
+            startActivity(intent);
+        });
 
         // Configurar TextWatcher para el EditText
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -114,8 +96,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         // Configurar Listener para seleccionar una opción del autocompletado
@@ -124,7 +105,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             String selectedLocation = (String) parent.getItemAtPosition(position);
             // Llamar a la función que desees con la ubicación seleccionada
             obtenerCoordenadas(selectedLocation);
-
         });
 
         // Configurar Listener para la acción de "Enter"
@@ -155,9 +135,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             adapter.clear();
             adapter.addAll(suggestions);
             adapter.notifyDataSetChanged();
-        }).addOnFailureListener((exception) -> {
-        });
+        }).addOnFailureListener((exception) -> {});
     }
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
@@ -172,7 +152,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                 if (location != null) {
                     currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15f));
                 }
             });
@@ -197,6 +176,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     }
+
     private void obtenerCoordenadas(String direccion) {
         pathCalculator.obtenerCoordenadas(direccion).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -204,9 +184,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if (coordenadas != null) {
                     // Crear una lista de coordenadas que incluya el punto de origen y el punto de destino
                     List<LatLng> listaCoordenadas = new ArrayList<>();
-                    listaCoordenadas.add(coordenadas); // Punto de destino
-                    listaCoordenadas.add(currentLocation); // Punto de origen
+                    RouteFinder routeFinder = new RouteFinder(this, "rutas_gps.db");
+                    String optimalRoute = routeFinder.findOptimalRoute(currentLocation, coordenadas);
+                    Toast.makeText(this, optimalRoute, Toast.LENGTH_SHORT).show();
+                    RouteExtractor routeExtractor = new RouteExtractor(this, "rutas.db");
+                    List<LatLng> routeSegment = routeExtractor.getRouteSegment(currentLocation, coordenadas, optimalRoute);
 
+                    listaCoordenadas.add(currentLocation);
+                    listaCoordenadas.addAll(routeSegment);
+                    listaCoordenadas.add(coordenadas); // Punto de destino
                     // Dibujar la ruta en el mapa
                     drawPathOnMap(listaCoordenadas);
                 } else {
@@ -218,18 +204,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
     }
-    private void drawPathOnMap(List<LatLng> mCoordinates){
-        List<LatLng> listaCoordenadas = new ArrayList<>();
-        listaCoordenadas.add(currentLocation); // Punto de origen
-        listaCoordenadas.addAll(mCoordinates); // Agregar puntos intermedios si los hay
-        LatLng destino = mCoordinates.get(mCoordinates.size() - 1); // Obtener el punto de destino
 
-        DrawPath drawPath = new DrawPath(mMap, listaCoordenadas, destino);
-        drawPath.drawPath();
+    private void drawPathOnMap(List<LatLng> mCoordinates) {
+        RouteDrawer routeDrawer = new RouteDrawer(mMap, this);
+        routeDrawer.drawRoute(mCoordinates);
 
         // Ajustar la cámara para mostrar toda la ruta trazada
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (LatLng point : listaCoordenadas) {
+        for (LatLng point : mCoordinates) {
             builder.include(point);
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100));

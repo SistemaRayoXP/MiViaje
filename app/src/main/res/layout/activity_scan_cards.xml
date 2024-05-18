@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainYellowDarknes"
+    android:background="@color/mainYellowligth"
     xmlns:map="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -45,32 +45,28 @@
         android:id="@+id/imageView3"
         android:layout_width="360dp"
         android:layout_height="483dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginBottom="9dp"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
         map:srcCompat="@drawable/scanning_img" />
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="363dp"
-        android:layout_height="79dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="414dp"
+        android:layout_height="97dp"
         android:layout_marginBottom="1dp"
+        android:background="@color/mainYellow"
+        android:gravity="center"
         android:text="Acerca tu tarjeta al sensor NFC"
         android:textColor="@color/mainGreen"
         android:textSize="32sp"
         app:layout_constraintBottom_toTopOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.571"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
