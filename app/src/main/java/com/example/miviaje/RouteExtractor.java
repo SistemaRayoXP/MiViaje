@@ -49,8 +49,6 @@ public class RouteExtractor {
                     }
                     contador = i;
                 }
-                Toast.makeText(context, ""+contador, Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, minPuntoOrigin.toString() + "," + minPuntoDestiny.toString(), Toast.LENGTH_SHORT).show();
                 boolean withinSegment = false;
                 for (int i = 0; i < routeArray.length(); i++) {
                     JSONObject point = routeArray.getJSONObject(i);

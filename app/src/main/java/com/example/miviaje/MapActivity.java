@@ -1,11 +1,13 @@
 package com.example.miviaje;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -42,7 +44,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private AutoCompleteTextView autoCompleteTextView;
     private ArrayAdapter<String> adapter;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private GoogleMap mMap;
+    public GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private LatLng currentLocation;
     private PathCalculator pathCalculator;
@@ -51,6 +53,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private ImageView favPaths;
     private ImageView saveRouteButton;
 
+    private String foundRoute;
+    private String destino;
+    List<LatLng> listaCoordenadas = new ArrayList<>();
+
+    private Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +111,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             // Aquí puedes ejecutar la función que deseas cuando se selecciona una opción del autocompletado
             String selectedLocation = (String) parent.getItemAtPosition(position);
             // Llamar a la función que desees con la ubicación seleccionada
+            destino = selectedLocation;
             obtenerCoordenadas(selectedLocation);
         });
 
@@ -113,10 +121,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // Aquí puedes ejecutar la función que deseas cuando se presiona "Enter"
                 String locationEntered = autoCompleteTextView.getText().toString();
                 // Llamar a la función que desees con la ubicación ingresada
+                destino = locationEntered;
                 obtenerCoordenadas(locationEntered);
                 return true;
             }
             return false;
+        });
+        
+        saveRouteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                RouteDatabaseHelper dbHelper = new RouteDatabaseHelper(context);
+
+                if (!dbHelper.databaseExists()) {
+                    dbHelper.getWritableDatabase(); // Esto creará la base de datos si no existe
+                }
+                dbHelper.addRoute(foundRoute,destino,listaCoordenadas);
+                Toast.makeText(MapActivity.this, "Se agrego a favoritos", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -183,9 +206,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 LatLng coordenadas = task.getResult();
                 if (coordenadas != null) {
                     // Crear una lista de coordenadas que incluya el punto de origen y el punto de destino
-                    List<LatLng> listaCoordenadas = new ArrayList<>();
                     RouteFinder routeFinder = new RouteFinder(this, "rutas_gps.db");
                     String optimalRoute = routeFinder.findOptimalRoute(currentLocation, coordenadas);
+                    foundRoute =optimalRoute;
                     Toast.makeText(this, optimalRoute, Toast.LENGTH_SHORT).show();
                     RouteExtractor routeExtractor = new RouteExtractor(this, "rutas.db");
                     List<LatLng> routeSegment = routeExtractor.getRouteSegment(currentLocation, coordenadas, optimalRoute);
@@ -194,6 +217,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     listaCoordenadas.addAll(routeSegment);
                     listaCoordenadas.add(coordenadas); // Punto de destino
                     // Dibujar la ruta en el mapa
+                    saveRouteButton.setVisibility(View.VISIBLE);
                     drawPathOnMap(listaCoordenadas);
                 } else {
                     Log.e("Coordenadas", "No se pudieron obtener las coordenadas");

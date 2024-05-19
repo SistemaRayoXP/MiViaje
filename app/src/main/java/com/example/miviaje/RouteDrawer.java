@@ -58,7 +58,7 @@ public class RouteDrawer {
         String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin +
                 "&destination=" + destination +
                 "&waypoints=" + waypoints.toString() +
-                "&key=";
+                "&key=" + context.getString(R.string.AKPI);
 
         new FetchRouteTask().execute(url);
 
